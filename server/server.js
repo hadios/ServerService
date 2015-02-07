@@ -13,9 +13,10 @@ var port = process.env.PORT || 8080;
 
 // Setup mongoose
 var mongoose	= require('mongoose');
-mongoose.connect('mongodb://localhost:27017/');
+mongoose.connect('mongodb://localhost:27017/test_database');
 
-var Bear		= require('./app/models/bear');
+//var Bear		= require('./app/models/bear');
+var Product	= require('./app/models/product');
 
 // ROUTES FOR API
 // ==================================================================================
@@ -32,69 +33,78 @@ router.get('/', function(req, res) {
 	res.json({ message: 'Hooray! Welcome to our api!' });
 });
 
-// For routes that ends in /bears
+// For routes that ends in /products
 // ==================================================================================
-router.route('/bears')
+router.route('/products')
 
 	// POST 
 	.post(function(req, res) {
-		var bear = new Bear();
-		bear.name = req.body.name;
+		var product = new Product();
+		product.name = req.body.name;
+		product.edition = req.body.name;
 		
-		bear.save(
+		product.save(
 			function(err) {
 				if (err) {
 					res.send(err);
 				}
 				
-				res.json({ message: 'Bear created!' });
+				res.json({ message: 'Product created!' });
 			}
 		);
 	})
 	
 	// GET
 	.get(function(req, res) {
-		Bear.find(function(err, bears) {
+		Product.find(function(err, products) {
 			if (err) {
 				res.send(err);
 			}
 			
-			res.json(bears);
+			res.json(products);
 		});
 	});
 	
-// For routes that ends in /bears
+// For routes that ends in /products
 // ==================================================================================
-router.route('/bears/:bear_id')
+router.route('/products/:product_id')
 
 	.get(function(req, res) {
-		Bear.findById(req.params.bear_id, function(err, bear) {
+		
+		Product.findOne({ 'itemNo': req.params.product_id }, function(err, product) {
 			if (err) {
 				res.send(err);
 			}
 			
-			res.json(bear);
+			res.json(product);
 		});
 	})
 	
 	.put(function(req, res) {
-		Bear.findById(req.params.bear_id, function(err, bear) {
+		Product.findById({ 'itemNo': req.params.product_id }, function(err, product) {
 			if (err) {
 				res.send(err);
 			}
 			
-			bear.name = req.body.name;
-			bear.save(function(err) {
+			if (req.body.name != null) {
+				product.name = req.body.name;
+			}
+			
+			if (req.body.priceSg != null) {
+				product.priceSg = req.body.priceSg;
+			}
+			
+			product.save(function(err) {
 				if (err) {
 					res.send(err);
 				}
-				res.json({ message: 'Bear updated!' });
+				res.json({ message: 'Product updated!' });
 			});
 		});
 	})
 	
 	.delete(function(req, res) {
-		Bear.remove({ _id: req.params.bear_id }, function(err, bear) {
+		Product.remove({ 'itemNo': req.params.product_id }, function(err, product) {
 			if (err) {
 				res.send(err);
 			}

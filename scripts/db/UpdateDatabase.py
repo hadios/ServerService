@@ -10,7 +10,7 @@ FILE_FORMAT = {
 				'priceMalaysia'		: 5 };
 
 DATABASE_NAME 	= 'test_database';
-COLLECTION_NAME = 'productlist';				
+COLLECTION_NAME = 'products';				
 
 def ListAllItemInDatabase (database, collectionName):
 	posts = database[collectionName];
@@ -34,7 +34,9 @@ def UpdateAndAddProductInfoFromList(collectionToAddTo, filename):
 		
 			# Create the product information
 			# Add sample document
-			sampleItem = { "itemName" 		: elements[FILE_FORMAT['itemName']],
+			sampleItem = { 
+						   "itemNo"			: elements[FILE_FORMAT['itemNo']],
+						   "itemName" 		: elements[FILE_FORMAT['itemName']],
 						   "Edition"		: elements[FILE_FORMAT['edition']],
 						   "Region" 		: elements[FILE_FORMAT['region']],
 						   "Price($SG)" 	: elements[FILE_FORMAT['priceSingapore']],
@@ -62,13 +64,14 @@ def Main ():
 	
 	# Get database
 	db = client[DATABASE_NAME];
+	print(db);
 	
 	# Create new collection
 	productCollection = db[COLLECTION_NAME];
 	productCollection.remove();
 	
 	UpdateAndAddProductInfoFromList(productCollection, PRODUCTFILE_NAME);
-	#ListAllItemInDatabase(db, COLLECTION_NAME);
+	ListAllItemInDatabase(db, COLLECTION_NAME);
 	print("Total items: " + str(productCollection.count()));
 	
 #------------------------------------------------------------------------------
