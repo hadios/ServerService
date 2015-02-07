@@ -35,24 +35,24 @@ def UpdateAndAddProductInfoFromList(collectionToAddTo, filename):
 			# Create the product information
 			# Add sample document
 			sampleItem = { 
-						   "itemNo"			: elements[FILE_FORMAT['itemNo']],
-						   "itemName" 		: elements[FILE_FORMAT['itemName']],
-						   "Edition"		: elements[FILE_FORMAT['edition']],
-						   "Region" 		: elements[FILE_FORMAT['region']],
-						   "Price($SG)" 	: elements[FILE_FORMAT['priceSingapore']],
-						   "Price($MY)" 	: elements[FILE_FORMAT['priceMalaysia']] };
+						   "Sn"			: elements[FILE_FORMAT['itemNo']],
+						   "Name" 		: elements[FILE_FORMAT['itemName']],
+						   "Edition"	: elements[FILE_FORMAT['edition']],
+						   "Region" 	: elements[FILE_FORMAT['region']],
+						   "PriceSG" 	: elements[FILE_FORMAT['priceSingapore']],
+						   "PriceMY" 	: elements[FILE_FORMAT['priceMalaysia']] };
 		
 			#print(sampleItem);
 		
 			# Check if item is already in database
-			findResult = collectionToAddTo.find_one({"itemName": sampleItem['itemName']});
+			findResult = collectionToAddTo.find_one({"Name": sampleItem['Name']});
 			
 			if (findResult != None):
 				# If it is, update the price
-				collectionToAddTo.update({"itemName": sampleItem['itemName']}, 
+				collectionToAddTo.update({"Name": sampleItem['Name']}, 
 										 {"$set": 
-											{"Price($SG)": sampleItem['Price($SG)'], 
-											 "Price($MY)": sampleItem['Price($MY)']}
+											{"PriceSG": sampleItem['PriceSG'], 
+											 "PriceMY": sampleItem['PriceMY']}
 										 });
 			else:
 				# Else, insert the data
