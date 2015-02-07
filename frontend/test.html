@@ -2,6 +2,19 @@
 <html>
 
 <head>
+<style>
+table, th , td  {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+}
+table tr:nth-child(odd)	{
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+</style>
 <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
 </head>
 
@@ -9,26 +22,51 @@
 
 <div ng-app="" ng-controller="customersController"> 
 
-<ul>
-  <li ng-repeat="x in names">
-    {{ x.itemName }}
-  </li>
-</ul>
+<p> Search: <input type="text" ng-model="seachFilter"></p>
+
+<table>
+	<td><button ng-click="sortSn()">S/N</button> </td>
+	<td><button ng-click="sortName()">Name</button></td>
+	<td><button ng-click="sortPrice()">Price</button></td>
+
+	<tr ng-repeat="x in names | orderBy: sortOrder | filter: seachFilter">
+		<td>{{ x.Sn }}</td>
+		<td>{{ x.Name | uppercase }}</td>
+		<td>{{ x.PriceSG }}</td>
+	</tr>
+</table>
 
 </div>
 
 <script>
-function customersController($scope,$http) {
-  $http.get("http://localhost:8080/api/products")
-  .success(function(response) {
+function customersController($scope, $http, $log) {
+	var site = "http://localhost:8080/api";
+	var page = "/products";
+
+	$http.get(site + page)
+	.success(function(response) {
 		$scope.names = response;
 		$log.debug("Passed !");
-  })
-  .error(function(data, status, headers, config) {
-    // called asynchronously if an error occurs
-    // or server returns response with an error status.
-	$log.debug("Failed !");
-  });;
+	})
+	.error(function(data, status, headers, config) {
+		// called asynchronously if an error occurs
+		// or server returns response with an error status.
+		$log.debug("Failed !");
+	});;
+	
+	// Functions for sorting
+	$scope.sortOrder = 'Name';
+	$scope.sortSn = function () {
+		$scope.sortOrder = 'Sn';
+	}
+	
+	$scope.sortName = function () {
+		$scope.sortOrder = 'Name';
+	}
+	
+	$scope.sortPrice = function () {
+		$scope.sortOrder = 'PriceSG';
+	}
 }
 </script>
 
