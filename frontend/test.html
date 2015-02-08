@@ -20,18 +20,20 @@ table tr:nth-child(even) {
 
 <body>
 
-<div ng-app="" ng-controller="customersController"> 
+<div ng-app="productList" ng-controller="productlistController"> 
 
 <p> Search: <input type="text" ng-model="seachFilter"></p>
-
+<p> Total items: {{ names.length }}</p>
 <table>
-	<td><button ng-click="sortSn()">S/N</button> </td>
+	<td>S/N</td>
 	<td><button ng-click="sortName()">Name</button></td>
+	<td><button ng-click="sortType()">Console</button></td>
 	<td><button ng-click="sortPrice()">Price</button></td>
-
+	
 	<tr ng-repeat="x in names | orderBy: sortOrder | filter: seachFilter">
-		<td>{{ x.Sn }}</td>
+		<td>{{ totalItems = $index + 1 }}</td>
 		<td>{{ x.Name | uppercase }}</td>
+		<td>{{ x.Type | uppercase }}</td>
 		<td>{{ x.PriceSG }}</td>
 	</tr>
 </table>
@@ -39,10 +41,14 @@ table tr:nth-child(even) {
 </div>
 
 <script>
-function customersController($scope, $http, $log) {
+var app = angular.module("productList", []);
+
+app.controller("productlistController", function ($scope, $http, $log) {
 	var site = "http://localhost:8080/api";
 	var page = "/products";
 
+	$scope.totalItems = 0;
+	
 	$http.get(site + page)
 	.success(function(response) {
 		$scope.names = response;
@@ -64,10 +70,14 @@ function customersController($scope, $http, $log) {
 		$scope.sortOrder = 'Name';
 	}
 	
+	$scope.sortType = function () {
+		$scope.sortOrder = 'Type';
+	}
+	
 	$scope.sortPrice = function () {
 		$scope.sortOrder = 'PriceSG';
 	}
-}
+});
 </script>
 
 </body>
