@@ -1,0 +1,3 @@
+#!/bin/bash
+
+mongod --dbpath /home/ec2-user/ServerService/server
